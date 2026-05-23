@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add Resources</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Add Project Resources</h1>
+
+      <nav>
+        <a href="projects.html">Add Project</a>
+        <a href="resources.html">Add Resources</a>
+        <a href="optimization.html">Run Optimization</a>
+      </nav>
+
+      <div class="card">
+        <h2>Add Resource</h2>
+
+        <form id="resourceForm">
+          <select id="resourceProject" required>
+            <option value="">Select Project</option>
+          </select>
+
+          <input
+            type="text"
+            id="resourceName"
+            placeholder="Resource Name"
+            required
+          />
+
+          <select id="resourceType" required>
+            <option value="">Select Type</option>
+            <option value="Manpower">Manpower</option>
+            <option value="Equipment">Equipment</option>
+            <option value="Material">Material</option>
+            <option value="Budget">Budget</option>
+          </select>
+
+          <input
+            type="number"
+            id="quantityAvailable"
+            placeholder="Quantity Available"
+            required
+          />
+
+          <input type="number" id="unitCost" placeholder="Unit Cost" required />
+
+          <input
+            type="number"
+            id="productivityScore"
+            placeholder="Productivity Score"
+            required
+          />
+
+          <button type="submit">Save Resource</button>
+        </form>
+
+        <p id="resourceMessage"></p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

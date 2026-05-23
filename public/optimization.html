@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Run Optimization</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Run LP Optimization</h1>
+
+      <nav>
+        <a href="projects.html">Add Project</a>
+        <a href="resources.html">Add Resources</a>
+        <a href="optimization.html">Run Optimization</a>
+      </nav>
+
+      <div class="card">
+        <h2>Select Project</h2>
+
+        <select id="optimizationProject">
+          <option value="">Select Project</option>
+        </select>
+
+        <button id="runOptimizationBtn">Run Optimization</button>
+
+        <p id="optimizationMessage"></p>
+      </div>
+
+      <div class="card">
+        <h2>Optimization Result</h2>
+        <div id="optimizationResult"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
