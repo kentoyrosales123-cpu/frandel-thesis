@@ -17,12 +17,25 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/optimize", optimizationRoutes);
 
+const PORT = process.env.PORT || 5000;
+
+if (!process.env.MONGODB_URI) {
+  console.error(
+    "MONGODB_URI is missing. Add it in Render Environment Variables.",
+  );
+  process.exit(1);
+}
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("MongoDB connected");
-    app.listen(process.env.PORT || 5000, () => {
-      console.log(`Server running on port ${process.env.PORT || 5000}`);
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   })
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1);
+  });
