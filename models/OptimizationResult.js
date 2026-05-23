@@ -7,11 +7,50 @@ const optimizationResultSchema = new mongoose.Schema(
       ref: "Project",
       required: true,
     },
-    totalBudget: Number,
-    budgetUsed: Number,
-    remainingBudget: Number,
-    allocatedResources: Array,
-    recommendation: String,
+
+    method: {
+      type: String,
+      default: "LP-MCDM",
+    },
+
+    selectedResources: [
+      {
+        resourceId: mongoose.Schema.Types.ObjectId,
+        name: String,
+        cost: Number,
+        laborRequired: Number,
+        timeRequired: Number,
+        mcdmScore: Number,
+      },
+    ],
+
+    rejectedResources: [
+      {
+        resourceId: mongoose.Schema.Types.ObjectId,
+        name: String,
+        reason: String,
+        mcdmScore: Number,
+      },
+    ],
+
+    totalCost: Number,
+    totalLabor: Number,
+    totalTime: Number,
+    totalScore: Number,
+
+    constraints: {
+      maxBudget: Number,
+      maxLabor: Number,
+      maxTime: Number,
+    },
+
+    weights: {
+      cost: Number,
+      efficiency: Number,
+      urgency: Number,
+      availability: Number,
+      risk: Number,
+    },
   },
   { timestamps: true },
 );

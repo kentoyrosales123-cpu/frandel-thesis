@@ -28,7 +28,70 @@
           <option value="">Select Project</option>
         </select>
 
-        <button id="runOptimizationBtn">Run Optimization</button>
+        <input
+          type="number"
+          id="maxBudget"
+          placeholder="Maximum Budget"
+          required
+        />
+
+        <input
+          type="number"
+          id="maxLabor"
+          placeholder="Maximum Labor"
+          required
+        />
+
+        <input
+          type="number"
+          id="maxTime"
+          placeholder="Maximum Time (days)"
+          required
+        />
+
+        <h3>Criteria Weights</h3>
+
+        <input
+          type="number"
+          step="0.01"
+          id="weightCost"
+          placeholder="Cost Weight"
+          value="0.25"
+        />
+
+        <input
+          type="number"
+          step="0.01"
+          id="weightEfficiency"
+          placeholder="Efficiency Weight"
+          value="0.25"
+        />
+
+        <input
+          type="number"
+          step="0.01"
+          id="weightUrgency"
+          placeholder="Urgency Weight"
+          value="0.25"
+        />
+
+        <input
+          type="number"
+          step="0.01"
+          id="weightAvailability"
+          placeholder="Availability Weight"
+          value="0.15"
+        />
+
+        <input
+          type="number"
+          step="0.01"
+          id="weightRisk"
+          placeholder="Risk Weight"
+          value="0.10"
+        />
+
+        <button id="runOptimizationBtn">Run LP-MCDM Optimization</button>
 
         <p id="optimizationMessage"></p>
       </div>

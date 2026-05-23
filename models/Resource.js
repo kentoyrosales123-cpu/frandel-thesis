@@ -7,25 +7,64 @@ const resourceSchema = new mongoose.Schema(
       ref: "Project",
       required: true,
     },
-    resourceName: {
+
+    name: {
       type: String,
       required: true,
+      trim: true,
     },
-    resourceType: {
+
+    type: {
       type: String,
-      required: true,
+      default: "General",
     },
-    quantityAvailable: {
+
+    cost: {
       type: Number,
       required: true,
+      default: 0,
     },
-    unitCost: {
+
+    efficiency: {
       type: Number,
       required: true,
+      default: 1,
+      min: 1,
+      max: 10,
     },
-    productivityScore: {
+
+    urgency: {
       type: Number,
       required: true,
+      default: 1,
+      min: 1,
+      max: 10,
+    },
+
+    availability: {
+      type: Number,
+      required: true,
+      default: 1,
+      min: 1,
+      max: 10,
+    },
+
+    risk: {
+      type: Number,
+      required: true,
+      default: 1,
+      min: 1,
+      max: 10,
+    },
+
+    laborRequired: {
+      type: Number,
+      default: 0,
+    },
+
+    timeRequired: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true },

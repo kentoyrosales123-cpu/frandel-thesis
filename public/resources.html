@@ -47,24 +47,62 @@
             <option value="Manpower">Manpower</option>
             <option value="Equipment">Equipment</option>
             <option value="Material">Material</option>
-            <option value="Budget">Budget</option>
           </select>
+
+          <input type="number" id="resourceCost" placeholder="Cost" required />
 
           <input
             type="number"
-            id="quantityAvailable"
-            placeholder="Quantity Available"
+            id="resourceEfficiency"
+            placeholder="Efficiency (1-10)"
+            min="1"
+            max="10"
             required
           />
-          <input type="number" id="unitCost" placeholder="Unit Cost" required />
+
           <input
             type="number"
-            id="productivityScore"
-            placeholder="Productivity Score"
+            id="resourceUrgency"
+            placeholder="Urgency (1-10)"
+            min="1"
+            max="10"
+            required
+          />
+
+          <input
+            type="number"
+            id="resourceAvailability"
+            placeholder="Availability (1-10)"
+            min="1"
+            max="10"
+            required
+          />
+
+          <input
+            type="number"
+            id="resourceRisk"
+            placeholder="Risk (1-10)"
+            min="1"
+            max="10"
+            required
+          />
+
+          <input
+            type="number"
+            id="laborRequired"
+            placeholder="Labor Required"
+            required
+          />
+
+          <input
+            type="number"
+            id="timeRequired"
+            placeholder="Time Required (days)"
             required
           />
 
           <button type="submit" id="resourceSubmitBtn">Save Resource</button>
+
           <button
             type="button"
             id="cancelEditBtn"

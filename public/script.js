@@ -140,15 +140,24 @@ async function addResource(e) {
 
   const resourceData = {
     projectId: document.getElementById("resourceProject").value,
-    resourceName: document.getElementById("resourceName").value,
-    resourceType: document.getElementById("resourceType").value,
-    quantityAvailable: Number(
-      document.getElementById("quantityAvailable").value,
-    ),
-    unitCost: Number(document.getElementById("unitCost").value),
-    productivityScore: Number(
-      document.getElementById("productivityScore").value,
-    ),
+
+    name: document.getElementById("resourceName").value,
+
+    type: document.getElementById("resourceType").value,
+
+    cost: Number(document.getElementById("resourceCost").value),
+
+    efficiency: Number(document.getElementById("resourceEfficiency").value),
+
+    urgency: Number(document.getElementById("resourceUrgency").value),
+
+    availability: Number(document.getElementById("resourceAvailability").value),
+
+    risk: Number(document.getElementById("resourceRisk").value),
+
+    laborRequired: Number(document.getElementById("laborRequired").value),
+
+    timeRequired: Number(document.getElementById("timeRequired").value),
   };
 
   try {
@@ -205,56 +214,89 @@ async function runOptimization() {
     return;
   }
 
+  const optimizationData = {
+    maxBudget: Number(document.getElementById("maxBudget").value),
+    maxLabor: Number(document.getElementById("maxLabor").value),
+    maxTime: Number(document.getElementById("maxTime").value),
+
+    weights: {
+      cost: Number(document.getElementById("weightCost").value),
+      efficiency: Number(document.getElementById("weightEfficiency").value),
+      urgency: Number(document.getElementById("weightUrgency").value),
+      availability: Number(document.getElementById("weightAvailability").value),
+      risk: Number(document.getElementById("weightRisk").value),
+    },
+  };
+
   try {
     const res = await fetch(`${API_URL}/optimize/${projectId}`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(optimizationData),
     });
 
     const data = await res.json();
 
-    if (data.success) {
-      message.textContent = "Optimization completed.";
+    if (data.result) {
+      message.textContent = "LP-MCDM optimization completed.";
       message.className = "success";
 
       const result = data.result;
 
       resultBox.innerHTML = `
         <div class="result-item">
-          <h3>Budget Summary</h3>
-          <p><strong>Total Budget:</strong> ₱${result.totalBudget}</p>
-          <p><strong>Budget Used:</strong> ₱${result.budgetUsed}</p>
-          <p><strong>Remaining Budget:</strong> ₱${result.remainingBudget}</p>
+          <h3>Optimization Summary</h3>
+          <p><strong>Method:</strong> ${result.method}</p>
+          <p><strong>Total Cost:</strong> ₱${result.totalCost}</p>
+          <p><strong>Total Labor:</strong> ${result.totalLabor}</p>
+          <p><strong>Total Time:</strong> ${result.totalTime} days</p>
+          <p><strong>Total Score:</strong> ${result.totalScore}</p>
         </div>
 
         <div class="result-item">
-          <h3>Allocated Resources</h3>
+          <h3>Selected Resources</h3>
           ${
-            result.allocatedResources.length > 0
-              ? result.allocatedResources
+            result.selectedResources.length > 0
+              ? result.selectedResources
                   .map(
                     (item) => `
-                      <p>
-                        <strong>${item.resourceName}</strong><br>
-                        Type: ${item.resourceType}<br>
-                        Quantity: ${item.allocatedQuantity}<br>
-                        Unit Cost: ₱${item.unitCost}<br>
-                        Total Cost: ₱${item.totalCost}<br>
-                        Productivity Score: ${item.productivityScore}
-                      </p>
-                    `,
+                    <p>
+                      <strong>${item.name}</strong><br>
+                      Cost: ₱${item.cost}<br>
+                      Labor: ${item.laborRequired}<br>
+                      Time: ${item.timeRequired} days<br>
+                      MCDM Score: ${item.mcdmScore}
+                    </p>
+                  `,
                   )
                   .join("")
-              : "<p>No resources allocated.</p>"
+              : "<p>No resources selected.</p>"
           }
         </div>
 
         <div class="result-item">
-          <h3>Recommendation</h3>
-          <p>${result.recommendation}</p>
+          <h3>Rejected Resources</h3>
+          ${
+            result.rejectedResources.length > 0
+              ? result.rejectedResources
+                  .map(
+                    (item) => `
+                    <p>
+                      <strong>${item.name}</strong><br>
+                      Score: ${item.mcdmScore}<br>
+                      Reason: ${item.reason}
+                    </p>
+                  `,
+                  )
+                  .join("")
+              : "<p>No rejected resources.</p>"
+          }
         </div>
       `;
     } else {
-      message.textContent = "Optimization failed.";
+      message.textContent = data.message || "Optimization failed.";
       message.className = "error";
     }
   } catch (error) {
@@ -308,12 +350,15 @@ async function loadResourcesByProject(projectId) {
       .map(
         (resource) => `
         <div class="result-item">
-          <h3>${resource.resourceName}</h3>
-          <p><strong>Type:</strong> ${resource.resourceType}</p>
-          <p><strong>Quantity:</strong> ${resource.quantityAvailable}</p>
-          <p><strong>Unit Cost:</strong> ₱${resource.unitCost}</p>
-          <p><strong>Productivity Score:</strong> ${resource.productivityScore}</p>
-
+          <h3>${resource.name}</h3>
+<p><strong>Type:</strong> ${resource.type}</p>
+<p><strong>Cost:</strong> ₱${resource.cost}</p>
+<p><strong>Efficiency:</strong> ${resource.efficiency}</p>
+<p><strong>Urgency:</strong> ${resource.urgency}</p>
+<p><strong>Availability:</strong> ${resource.availability}</p>
+<p><strong>Risk:</strong> ${resource.risk}</p>
+<p><strong>Labor:</strong> ${resource.laborRequired}</p>
+<p><strong>Time:</strong> ${resource.timeRequired} days</p>
           <button onclick='editResource(${JSON.stringify(resource)})'>
             Edit Resource
           </button>
@@ -329,13 +374,15 @@ async function loadResourcesByProject(projectId) {
 function editResource(resource) {
   document.getElementById("editingResourceId").value = resource._id;
   document.getElementById("resourceProject").value = resource.projectId;
-  document.getElementById("resourceName").value = resource.resourceName;
-  document.getElementById("resourceType").value = resource.resourceType;
-  document.getElementById("quantityAvailable").value =
-    resource.quantityAvailable;
-  document.getElementById("unitCost").value = resource.unitCost;
-  document.getElementById("productivityScore").value =
-    resource.productivityScore;
+  document.getElementById("resourceName").value = resource.name;
+  document.getElementById("resourceType").value = resource.type;
+  document.getElementById("resourceCost").value = resource.cost;
+  document.getElementById("resourceEfficiency").value = resource.efficiency;
+  document.getElementById("resourceUrgency").value = resource.urgency;
+  document.getElementById("resourceAvailability").value = resource.availability;
+  document.getElementById("resourceRisk").value = resource.risk;
+  document.getElementById("laborRequired").value = resource.laborRequired;
+  document.getElementById("timeRequired").value = resource.timeRequired;
 
   document.getElementById("resourceSubmitBtn").textContent = "Update Resource";
   document.getElementById("cancelEditBtn").style.display = "block";
