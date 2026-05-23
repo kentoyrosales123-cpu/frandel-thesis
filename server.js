@@ -42,7 +42,7 @@ const startServer = async (port = process.env.PORT || 5000) => {
 
   await mongoose.connect(process.env.MONGODB_URI);
 
-  return app.listen(port, "127.0.0.1", () => {
+  return app.listen(port, "0.0.0.0", () => {
     console.log(`Server running on port ${port}`);
   });
 };
