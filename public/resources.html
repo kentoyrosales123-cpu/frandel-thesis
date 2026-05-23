@@ -2,20 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Resources</title>
-    <link rel="stylesheet" href="style.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
       <h1>Add Project Resources</h1>
 
       <nav>
+        <a href="index.html">Home</a>
         <a href="projects.html">Add Project</a>
         <a href="resources.html">Add Resources</a>
         <a href="optimization.html">Run Optimization</a>
@@ -25,6 +29,8 @@
         <h2>Add Resource</h2>
 
         <form id="resourceForm">
+          <input type="hidden" id="editingResourceId" />
+
           <select id="resourceProject" required>
             <option value="">Select Project</option>
           </select>
@@ -50,9 +56,7 @@
             placeholder="Quantity Available"
             required
           />
-
           <input type="number" id="unitCost" placeholder="Unit Cost" required />
-
           <input
             type="number"
             id="productivityScore"
@@ -60,10 +64,28 @@
             required
           />
 
-          <button type="submit">Save Resource</button>
+          <button type="submit" id="resourceSubmitBtn">Save Resource</button>
+          <button
+            type="button"
+            id="cancelEditBtn"
+            class="secondary-btn"
+            style="display: none"
+          >
+            Cancel Edit
+          </button>
         </form>
 
         <p id="resourceMessage"></p>
+      </div>
+
+      <div class="card">
+        <h2>Resources Added</h2>
+
+        <select id="resourceListProject">
+          <option value="">Select Project to View Resources</option>
+        </select>
+
+        <div id="resourceList"></div>
       </div>
     </div>
 

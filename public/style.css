@@ -375,3 +375,13 @@ button:hover {
 .delete-btn:hover {
   transform: translateY(-2px);
 }
+
+.secondary-btn {
+  background: rgba(148, 163, 184, 0.15);
+  box-shadow: none;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.secondary-btn:hover {
+  background: rgba(148, 163, 184, 0.25);
+}

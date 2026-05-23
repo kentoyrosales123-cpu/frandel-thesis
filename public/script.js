@@ -7,6 +7,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const resourceForm = document.getElementById("resourceForm");
   const runOptimizationBtn = document.getElementById("runOptimizationBtn");
 
+  const resourceListProject = document.getElementById("resourceListProject");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+  if (resourceListProject) {
+    resourceListProject.addEventListener("change", (e) => {
+      loadResourcesByProject(e.target.value);
+    });
+  }
+
+  if (cancelEditBtn) {
+    cancelEditBtn.addEventListener("click", resetResourceForm);
+  }
+
   if (projectForm) {
     projectForm.addEventListener("submit", addProject);
   }
@@ -34,6 +47,17 @@ async function loadProjects() {
     }
 
     data.projects.forEach((project) => {
+      const resourceListProject = document.getElementById(
+        "resourceListProject",
+      );
+
+      if (resourceListProject) {
+        resourceListProject.innerHTML += `
+    <option value="${project._id}">
+      ${project.projectName}
+    </option>
+  `;
+      }
       if (projectList) {
         projectList.innerHTML += `
   <div class="project-item">
@@ -112,6 +136,7 @@ async function addResource(e) {
   e.preventDefault();
 
   const message = document.getElementById("resourceMessage");
+  const editingResourceId = document.getElementById("editingResourceId")?.value;
 
   const resourceData = {
     projectId: document.getElementById("resourceProject").value,
@@ -127,8 +152,14 @@ async function addResource(e) {
   };
 
   try {
-    const res = await fetch(`${API_URL}/resources`, {
-      method: "POST",
+    const url = editingResourceId
+      ? `${API_URL}/resources/${editingResourceId}`
+      : `${API_URL}/resources`;
+
+    const method = editingResourceId ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
       headers: {
         "Content-Type": "application/json",
       },
@@ -138,11 +169,23 @@ async function addResource(e) {
     const data = await res.json();
 
     if (data.success) {
-      message.textContent = "Resource added successfully.";
+      message.textContent = editingResourceId
+        ? "Resource updated successfully."
+        : "Resource added successfully.";
+
       message.className = "success";
-      e.target.reset();
+
+      const selectedProjectId = resourceData.projectId;
+
+      resetResourceForm();
+
+      if (document.getElementById("resourceListProject")) {
+        document.getElementById("resourceListProject").value =
+          selectedProjectId;
+        loadResourcesByProject(selectedProjectId);
+      }
     } else {
-      message.textContent = "Failed to add resource.";
+      message.textContent = "Failed to save resource.";
       message.className = "error";
     }
   } catch (error) {
@@ -243,4 +286,69 @@ async function deleteProject(projectId) {
   } catch (error) {
     alert("Server error while deleting project.");
   }
+}
+
+async function loadResourcesByProject(projectId) {
+  const resourceList = document.getElementById("resourceList");
+
+  if (!resourceList || !projectId) return;
+
+  resourceList.innerHTML = "<p>Loading resources...</p>";
+
+  try {
+    const res = await fetch(`${API_URL}/resources/${projectId}`);
+    const data = await res.json();
+
+    if (!data.resources || data.resources.length === 0) {
+      resourceList.innerHTML = "<p>No resources added yet.</p>";
+      return;
+    }
+
+    resourceList.innerHTML = data.resources
+      .map(
+        (resource) => `
+        <div class="result-item">
+          <h3>${resource.resourceName}</h3>
+          <p><strong>Type:</strong> ${resource.resourceType}</p>
+          <p><strong>Quantity:</strong> ${resource.quantityAvailable}</p>
+          <p><strong>Unit Cost:</strong> ₱${resource.unitCost}</p>
+          <p><strong>Productivity Score:</strong> ${resource.productivityScore}</p>
+
+          <button onclick='editResource(${JSON.stringify(resource)})'>
+            Edit Resource
+          </button>
+        </div>
+      `,
+      )
+      .join("");
+  } catch (error) {
+    resourceList.innerHTML = "<p class='error'>Failed to load resources.</p>";
+  }
+}
+
+function editResource(resource) {
+  document.getElementById("editingResourceId").value = resource._id;
+  document.getElementById("resourceProject").value = resource.projectId;
+  document.getElementById("resourceName").value = resource.resourceName;
+  document.getElementById("resourceType").value = resource.resourceType;
+  document.getElementById("quantityAvailable").value =
+    resource.quantityAvailable;
+  document.getElementById("unitCost").value = resource.unitCost;
+  document.getElementById("productivityScore").value =
+    resource.productivityScore;
+
+  document.getElementById("resourceSubmitBtn").textContent = "Update Resource";
+  document.getElementById("cancelEditBtn").style.display = "block";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function resetResourceForm() {
+  const form = document.getElementById("resourceForm");
+  if (!form) return;
+
+  form.reset();
+  document.getElementById("editingResourceId").value = "";
+  document.getElementById("resourceSubmitBtn").textContent = "Save Resource";
+  document.getElementById("cancelEditBtn").style.display = "none";
 }
